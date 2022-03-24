@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="dev">
+ <!-- 회원가입 -->
+ <insert id="insertMember" parameterType="MemberDto">
+ 	insert into memberinfo values(#{userNo}, #{id}, #{userName}, #{pwd}, #{pwdQ}, #{pwdA}, #{addressNo}, #{address})
+ </insert>
+ <!-- 중복된 아이디인지 확인하기 -->
+ <select id="checkId" parameterType="MemberDto" resultType="String">
+ 	select count(*) from memberinfo where id=#{id}
+ </select>
+ <!-- 현재 유저넘버 최대값 구하기 -->
+ <select id="selectMaxUno" resultType="Integer">
+ 	select max(userNo) from memberinfo
+ </select>
+ <!-- 로그인할 때 아이디를 가지고 비밀번호를 찾아서 비교할 용도 -->
+ <select id="selectPwd" parameterType="String" resultType="String">
+ 	select pwd from memberinfo where id=#{id}
+ </select>
+ <!-- 아이디로 정보 가져오기 -->
+ <select id="selectInfoId" parameterType="String" resultType="MemberDto">
+ 	select * from memberinfo where id=#{id}
+ </select>
+ <!-- 유저번호로 정보 가져오기 -->
+ <select id="selectInfoUno" parameterType="integer" resultType="MemberDto">
+ 	select * from memberinfo where userNo=#{userNo}
+ </select>
+ <!-- 유저번호로 비밀번호 가져오기 -->
+ <select id="selectPwd2" parameterType="integer" resultType="String">
+ 	select pwd from memberinfo where userNo=#{userNo}
+ </select>
+ <!-- 회원 정보 수정하기 -->
+ <update id="updateMember" parameterType="MemberDto">
+ 	update memberinfo set pwd=#{pwd}, addressNo=#{addressNo}, address=#{address}  where userno=#{userNo}
+ </update>
+ <!-- 회원 탈퇴 처리 -->
+ <delete id="deleteMember" parameterType="integer">
+ 	delete from memberinfo where userNo=#{userNo}
+ </delete>
+ <!-- 이름으로 정보 가져오기 -->
+ <select id="selectInfoName" parameterType="String" resultType="MemberDto">
+ 	select * from memberinfo where userName=#{userName}
+ </select>
+ <!-- 아이디로 비번찾기 질문 가져오기 -->
+ <select id="selectidpwdQ" parameterType="String" resultType="String">
+ 	select pwdQ from memberinfo where id=#{id}
+ </select>
+ <!-- 아이디로 비번찾기 답변 가져오기 -->
+ <select id="selectidpwdA" parameterType="String" resultType="String">
+ 	select pwdA from memberinfo where id=#{id}
+ </select>
+ 
+ 
+ 
+ <!-- 상품추가 -->
+ <insert id="insertSang" parameterType="SangDto">
+ 	insert into sanginfo values(#{sangNo}, #{sangName}, #{sangDetail}, #{price}, #{sangNumber}, #{sImage})
+ </insert>
+ <!-- 현재 상품 번호 최대값 구하기 -->
+ <select id="selectMaxSno" resultType="Integer">
+ 	select max(sangNo) from sanginfo
+ </select>
+ <!-- 상품 목록 -->
+ <select id="selectSangList" resultType="SangDto">
+ 	select * from sanginfo order by sangNo desc
+ </select>
+ <!-- 상품 번호로 상품 정보 가져오기 -->
+ <select id="selectSang" resultType="SangDto" parameterType="Integer">
+ 	select * from sanginfo where sangno=#{sangNo}
+ </select>
+ <!-- 상품 수정하기 -->
+ <update id="updateSang" parameterType="SangDto">
+ 	update sanginfo set sangname=#{sangName}, sangdetail=#{sangDetail}, price=#{price}, sangnumber=#{sangNumber} where sangno=#{sangNo}
+ </update>
+ <!-- 상품 삭제하기 -->
+ <delete id="deleteSang" parameterType="Integer">
+ 	delete from sanginfo where sangno=#{sangNo}
+ </delete>
+ <!-- 상품 검색하기 -->
+ <select id="searchSang" parameterType="String" resultType="SangDto">
+ 	select * from sanginfo where sangname like '%'|| #{searchName} || '%' order by sangNo desc
+ </select>
+ 
+ <!-- 장바구니에 물건 추가하기 -->
+ <insert id="insertBasket" parameterType="BasketDto">
+ 	insert into basket values(#{userNo}, #{sangNo}, #{price}, #{sangQuan}, #{sangName}, #{sImage})
+ </insert>
+ <!-- 장바구니에 같은 물건이 있는지 확인하고 수량을 1증가해주기 위함 -->
+ <select id="selectSangQuan" parameterType="BasketDto" resultType="integer">
+ 	select sangquan from basket where userno=#{userNo} and sangNo=#{sangNo}
+ </select>
+ <!-- 유저번호로 장바구니에 들어있는 물건 확인하기 -->
+ <select id="selectBasket" parameterType="integer" resultType="BasketDto">
+ 	select * from basket where userno=#{userNo}
+ </select>
+ <!-- 장바구니에서 삭제 누르면 삭제되게 하기 -->
+ <delete id="deleteBasket" parameterType="BasketDto">
+ 	delete from basket where sangNo=#{sangNo} and userNo=#{userNo}
+ </delete>
+ <!-- 장바구니에 있는 물건 전체 삭제 -->
+ <delete id="deleteAllBasket" parameterType="integer">
+ 	delete from basket where userno=#{userNo}
+ </delete>
+ 
+ 
+ 
+ <!-- 구매하면 구매 테이블에 추가하기 -->
+ <insert id="insertPurchase" parameterType="PurchaseDto">
+ 	insert into purchase values(#{purchaseNo}, #{userNo}, #{sangNo}, #{pAddressNo}, #{pAddress}, #{pState}, #{sangQuan}, #{price}, sysdate)
+ </insert>
+  <!-- 현재 purchaseNo 최대값 구하기 -->
+ <select id="selectMaxPno" resultType="Integer">
+ 	select max(purchaseNo) from purchase
+ </select>
+ <!-- 유저번호로 구매내역 확인하기 -->
+ <select id="selectPurchase" parameterType="integer" resultType="PurchaseDto">
+ 	select * from purchase where userno=#{userNo} order by purchaseno desc
+ </select>
+ <!-- 주문 상태 바꾸기용도 -->
+ <update id="updatePstate" parameterType="PurchaseDto">
+ 	update purchase set pstate=#{pState} where userno=#{userNo} and sangno=#{sangNo}
+ </update>
+ <!-- 주문 확인 목록 -->
+ <select id="selectPlist" resultType="PurchaseDto">
+ 	select * from purchase order by purchaseno desc
+ </select>
+ 
+ 
+ <!-- qna게시판 목록 -->
+ <select id="selectqna" resultType="QnaDto">
+ 	select * from qna order by qnaNo desc
+ </select>
+ <!-- qna게시글 작성하기 -->
+ <insert id="insertqna" parameterType="QnaDto">
+ 	insert into qna values(#{qnaNo}, #{userNo}, #{qContent}, #{qTitle}, #{qPwd}, #{qSetting}, #{qOnum}, sysdate)
+ </insert>
+  <!-- 현재 qnaNo 최대값 구하기 -->
+ <select id="selectMaxQno" resultType="Integer">
+ 	select max(qnaNo) from qna
+ </select>
+ <!-- qna번호로 게시글 정보 불러오기 -->
+ <select id="selectdetailqna" parameterType="integer" resultType="QnaDto">
+ 	select * from qna where qnaNo=#{qnaNo}
+ </select>
+ <!-- 게시글 수정하기 -->
+ <update id="updateqna" parameterType="QnaDto">
+ 	update qna set qTitle=#{qTitle}, qContent=#{qContent} where qnaNo=#{qnaNo}
+ </update>
+ <!-- 게시글 삭제하기 -->
+ <delete id="deleteqna" parameterType="QnaDto">
+ 	delete qna basket where qnaNo=#{qnaNo} and qOnum=#{qOnum}
+ </delete>
+ <!-- 게시글 자세히보기 -->
+ <select id="selectdetailqna2" parameterType="QnaDto" resultType="QnaDto">
+ 	select * from qna where qnaNo=#{qnaNo} and qOnum=#{qOnum}
+ </select>
+ 
+ 
+ 
+</mapper>
