@@ -1,6 +1,7 @@
 # arishop 쇼핑몰 
 
 ![initial](https://user-images.githubusercontent.com/96767314/160013936-5ed51556-4c9a-4e3a-841a-cc8fd42991b3.png)
+![initial](https://user-images.githubusercontent.com/96767314/160014196-1458fddf-8f29-42e1-9d64-9869680ee4d4.png)
 
 
 ## Description
