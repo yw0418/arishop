@@ -1,5 +1,7 @@
 # arishop 쇼핑몰 
 
+![initial](https://user-images.githubusercontent.com/96767314/160013936-5ed51556-4c9a-4e3a-841a-cc8fd42991b3.png)
+
 
 ## Description
 Spring MVC Framework 기반의 개인 프로젝트입니다.
